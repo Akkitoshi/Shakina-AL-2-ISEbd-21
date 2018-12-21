@@ -1,17 +1,17 @@
-package javalab;
+package javalabs;
 
 import java.awt.Graphics;
 import javax.swing.JPanel;
 
 public class MyPanel extends JPanel {
-	Catamaran catamaran;
+	IBoat boat;
 
-	public MyPanel(Catamaran ocean) {
-		catamaran = ocean;
+	public MyPanel(IBoat ocean) {
+		boat = ocean;
 	}
 
 	public void paint(Graphics g) {
 		super.paint(g);
-		catamaran.DrawCatamaran(g);
+		boat.DrawBoat(g);
 	}
 }

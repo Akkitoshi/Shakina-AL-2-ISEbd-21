@@ -1,4 +1,4 @@
-package javalab;
+package javalabs;
 
 import java.awt.Button;
 import java.awt.Color;
@@ -9,8 +9,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javalab.DirectionClass.Direction;
-import java.awt.SystemColor;
+import javalabs.DirectionClass.Direction;
 
 public class Main {
 	private JFrame frame;
@@ -32,38 +31,53 @@ public class Main {
 		initialize();
 	}
 
-	Catamaran catamaran;
+	public IBoat boat;
 	private JPanel panel;
 	private JButton buttonLeft;
 
 	private void initialize() {
 		frame = new JFrame();
-		frame.getContentPane().setBackground(SystemColor.BLUE);
-		frame.setBounds(100, 100, 1196, 685);
+		frame.getContentPane().setBackground(new Color(0, 0, 255));
+		frame.setBounds(100, 100, 1200, 800);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-		Button button = new Button("\u0421\u043E\u0437\u0434\u0430\u0442\u044C");
-		button.setForeground(new Color(0, 0, 153));
+
+		Button button = new Button("Create Boat");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				catamaran = new Catamaran(60, 10, Color.GRAY, Color.BLACK);
-				panel = new MyPanel(catamaran);
-				panel.setBounds(80, 80, 1000, 450);
+				boat = new Boat(60, 10, Color.GRAY);
+				panel = new MyPanel(boat);
+				panel.setBounds(100, 100, 1000, 540);
+				panel.setBackground(Color.BLUE);
 				frame.getContentPane().add(panel);
-				panel.setBackground(SystemColor.BLUE);
-				catamaran.SetPosition(100, 100, panel.getWidth(),
-						panel.getHeight());
+				boat.SetPosition(100, 100, panel.getWidth(), panel.getHeight());
 				panel.repaint();
 
 			}
 		});
-		button.setBounds(23, 10, 79, 24);
+		button.setBounds(0, 0, 99, 24);
 		frame.getContentPane().add(button);
+
+		Button button1 = new Button("Create Catamaran");
+		button1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				boat = new Catamaran(60, 10, Color.GRAY, Color.YELLOW);
+				panel = new MyPanel(boat);
+				panel.setBounds(100, 100, 1000, 540);
+				panel.setBackground(Color.BLUE);
+				frame.getContentPane().add(panel);
+				boat.SetPosition(100, 100, panel.getWidth(), panel.getHeight());
+				panel.repaint();
+
+			}
+		});
+		button1.setBounds(0, 30, 129, 24);
+		frame.getContentPane().add(button1);
 
 		buttonLeft = new JButton("");
 		buttonLeft.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				catamaran.MoveTransport(Direction.Left);
+				boat.MoveTransport(Direction.Left);
 				panel.repaint();
 			}
 		});
@@ -71,20 +85,23 @@ public class Main {
 
 		buttonLeft.setIcon(new ImageIcon(
 				"C:\\Users\\Lenovo\\Downloads\\buttonleft.NbWOT.jpg"));
-		buttonLeft.setBounds(995, 599, 37, 40);
+		// btnNewButton.setIco
+		buttonLeft.setBounds(1013, 691, 40, 40);
 		frame.getContentPane().add(buttonLeft);
 
 		JButton buttonDown = new JButton("");
+		buttonDown.setSelectedIcon(new ImageIcon(
+				"C:\\Users\\Lenovo\\Downloads\\buttondown.NqwnK.jpg"));
 		buttonDown.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				catamaran.MoveTransport(Direction.Down);
+				boat.MoveTransport(Direction.Down);
 				panel.repaint();
 			}
 		});
 		buttonDown.setIcon(new ImageIcon(
 				"C:\\Users\\Lenovo\\Downloads\\buttondown.NqwnK.jpg"));
 		buttonDown.setIconTextGap(2);
-		buttonDown.setBounds(1042, 599, 40, 40);
+		buttonDown.setBounds(1063, 691, 40, 40);
 		frame.getContentPane().add(buttonDown);
 
 		JButton buttonUp = new JButton("");
@@ -92,27 +109,27 @@ public class Main {
 				"C:\\Users\\Lenovo\\Downloads\\buttonup.OnSpI.jpg"));
 		buttonUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				catamaran.MoveTransport(Direction.Up);
+				boat.MoveTransport(Direction.Up);
 				panel.repaint();
 			}
 		});
 		buttonUp.setIcon(new ImageIcon(
 				"C:\\Users\\Lenovo\\Downloads\\buttonup.OnSpI.jpg"));
 		buttonUp.setIconTextGap(2);
-		buttonUp.setBounds(1042, 550, 40, 40);
+		buttonUp.setBounds(1063, 644, 40, 40);
 		frame.getContentPane().add(buttonUp);
 
 		JButton buttonRight = new JButton("");
 		buttonRight.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				catamaran.MoveTransport(Direction.Right);
+				boat.MoveTransport(Direction.Right);
 				panel.repaint();
 			}
 		});
 		buttonRight.setIcon(new ImageIcon(
 				"C:\\Users\\Lenovo\\Downloads\\buttonright.fNVEH.jpg"));
 		buttonRight.setIconTextGap(2);
-		buttonRight.setBounds(1092, 599, 40, 40);
+		buttonRight.setBounds(1113, 691, 40, 40);
 		frame.getContentPane().add(buttonRight);
 
 	}

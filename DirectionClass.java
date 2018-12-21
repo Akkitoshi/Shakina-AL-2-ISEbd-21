@@ -1,4 +1,4 @@
-package javalab;
+package javalabs;
 
 public class DirectionClass {
 	public enum Direction {
