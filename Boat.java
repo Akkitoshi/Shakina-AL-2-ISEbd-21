@@ -57,11 +57,11 @@ public class Boat extends Lodka {
 
 	public void DrawBoat(Graphics g) {
 		g.setColor(Color.DARK_GRAY);
-		g.fillRect(_startPosX + 30, _startPosY + 20, 75, 30);
-		g.fillOval(_startPosX + 79, _startPosY + 20, 40, 30);
-		g.fillOval(_startPosX, _startPosY + 20, 40, 30);
+		g.fillRect(_startPosX + 25, _startPosY + 15, 75, 25);
+		g.fillOval(_startPosX + 79, _startPosY + 15, 40, 25);
+		g.fillOval(_startPosX, _startPosY + 15, 40, 25);
 		g.setColor(MainColor);
-		g.fillRect(_startPosX + 10, _startPosY + 20, 95, 5);
-		g.fillRect(_startPosX + 10, _startPosY + 48, 95, 5);
+		g.fillRect(_startPosX + 10, _startPosY + 15, 95, 5);
+		g.fillRect(_startPosX + 10, _startPosY + 35, 95, 5);
 	}
 }
