@@ -2,7 +2,6 @@ package javalabs;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 class Port<T extends IBoat> {

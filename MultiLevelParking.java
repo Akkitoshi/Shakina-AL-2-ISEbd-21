@@ -10,8 +10,8 @@ public class MultiLevelParking {
 			int pictureHeight) {
 		parkingStages = new ArrayList<Port<IBoat>>();
 		for (int i = 0; i < countStages; ++i) {
-			parkingStages.add(new Port<IBoat>(countPlaces,
-					pictureWidth, pictureHeight));
+			parkingStages.add(new Port<IBoat>(countPlaces, pictureWidth,
+					pictureHeight));
 		}
 	}
 
