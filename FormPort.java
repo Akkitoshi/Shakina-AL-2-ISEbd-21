@@ -1,6 +1,4 @@
 package javalabs;
-
-
 import java.awt.*;
 
 import javax.swing.*;
@@ -17,6 +15,7 @@ public class FormPort {
 	private DefaultListModel model;
 	private JTextField maskedTextBox1;
 	MultiLevelParking hangar;
+
 	private PanelBoat pictureBoxTakeOcean;
 	private PanelPort panelPort;
 
@@ -75,6 +74,7 @@ public class FormPort {
 
 		JButton buttonSetAirBus = new JButton("Catamaran");
 		buttonSetAirBus.addActionListener(new ActionListener() {
+
 			public void actionPerformed(ActionEvent e) {
 				Color mainColor = JColorChooser.showDialog(null,
 						"Choose a color", Color.GRAY);
@@ -101,7 +101,6 @@ public class FormPort {
 
 		JLabel label = new JLabel("Take Boat");
 		label.setBounds(12, 0, 118, 16);
-		panel.add(label);
 
 		maskedTextBox1 = new JTextField();
 		maskedTextBox1.setBounds(68, 29, 70, 22);
@@ -151,6 +150,5 @@ public class FormPort {
 				panelPort.repaint();
 			}
 		});
-
 	}
 }

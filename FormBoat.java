@@ -1,7 +1,5 @@
 package javalabs;
 
-
-
 import java.awt.Button;
 import java.awt.Color;
 import java.awt.EventQueue;
@@ -54,8 +52,6 @@ public class FormBoat {
 				panel.setBounds(100, 100, 1000, 540);
 				frame.getContentPane().add(panel);
 				boat.SetPosition(100, 100, panel.getWidth(),panel.getHeight());
-				panel.repaint();
-
 			}
 		});
 		button.setBounds(23, 10, 99, 24);
