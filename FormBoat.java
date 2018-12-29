@@ -85,7 +85,6 @@ public class FormBoat {
 		buttonLeft
 				.setIcon(new ImageIcon(
 						"C:\\Users\\Lenovo\\Downloads\\buttondown.NqwnK.jpg"));
-		// btnNewButton.setIco
 		buttonLeft.setBounds(1013, 691, 40, 40);
 		frame.getContentPane().add(buttonLeft);
 
