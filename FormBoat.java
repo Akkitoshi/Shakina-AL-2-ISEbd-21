@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -50,10 +51,7 @@ public class FormBoat {
 				panel = new PanelBoat();
 				panel.setBounds(100, 100, 1000, 540);
 				frame.getContentPane().add(panel);
-				boat.SetPosition(100, 100, panel.getWidth(),
-						panel.getHeight());
-				panel.repaint();
-
+				boat.SetPosition(100, 100, panel.getWidth(),panel.getHeight());
 			}
 		});
 		button.setBounds(23, 10, 99, 24);
@@ -66,8 +64,7 @@ public class FormBoat {
 				panel = new PanelBoat();
 				panel.setBounds(100, 100, 1000, 540);
 				frame.getContentPane().add(panel);
-				boat.SetPosition(100, 100, panel.getWidth(),
-						panel.getHeight());
+				boat.SetPosition(100, 100, panel.getWidth(),panel.getHeight());
 				panel.repaint();
 			}
 		});

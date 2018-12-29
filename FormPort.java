@@ -1,20 +1,21 @@
 package javalabs;
 import java.awt.*;
-import javax.swing.JColorChooser;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JButton;
+
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
 
 public class FormPort {
-
 	private JFrame frame;
 	private JPanel panel;
+	private JList listBoxLevels;
+	private DefaultListModel model;
 	private JTextField maskedTextBox1;
-	Port<IBoat> port;
+	MultiLevelParking hangar;
+
 	private PanelBoat pictureBoxTakeOcean;
 	private PanelPort panelPort;
 
@@ -46,33 +47,34 @@ public class FormPort {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 1050, 500);
+		frame.setBounds(100, 100, 1050, 503);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		panelPort = new PanelPort();
-		panelPort.setBounds(10, 11, 768, 432);
+		panelPort.setBounds(0, 11, 777, 443);
 		frame.getContentPane().add(panelPort);
-		port = panelPort.getPort();
+		hangar = panelPort.getPort();
 		JPanel pictureBoxHangar = new JPanel();
 		pictureBoxHangar.setBounds(0, 0, 778, 466);
 		frame.getContentPane().add(pictureBoxHangar);
 
-		JButton buttonSetOcean = new JButton("Boat");
-		buttonSetOcean.addActionListener(new ActionListener() {
+		JButton buttonSetAir = new JButton("Boat");
+		buttonSetAir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Color mainColor = JColorChooser.showDialog(null,
 						"Choose a color", Color.GRAY);
 				Boat ocean = new Boat(100, 1000, mainColor);
-				int place = port.Plus(ocean);
-				PanelBoat.initialization = true;
+				int place = hangar.getHangar(listBoxLevels.getSelectedIndex())
+						.Plus(ocean);
 				panelPort.repaint();
 			}
 		});
-		buttonSetOcean.setBounds(788, 11, 110, 20);
-		frame.getContentPane().add(buttonSetOcean);
+		buttonSetAir.setBounds(790, 141, 118, 41);
+		frame.getContentPane().add(buttonSetAir);
 
-		JButton buttonSetOcean2 = new JButton("Catamaran");
-		buttonSetOcean2.addActionListener(new ActionListener() {
+		JButton buttonSetAirBus = new JButton("Catamaran");
+		buttonSetAirBus.addActionListener(new ActionListener() {
+
 			public void actionPerformed(ActionEvent e) {
 				Color mainColor = JColorChooser.showDialog(null,
 						"Choose a color", Color.GRAY);
@@ -80,13 +82,13 @@ public class FormPort {
 						"Choose a color", Color.GRAY);
 				Catamaran ocean = new Catamaran(100, 1000, mainColor,
 						dopColor);
-				int place = port.Plus(ocean);
-				PanelBoat.initialization = true;
+				int place = hangar.getHangar(listBoxLevels.getSelectedIndex())
+						.Plus(ocean);
 				panelPort.repaint();
 			}
 		});
-		buttonSetOcean2.setBounds(788, 42, 110, 20);
-		frame.getContentPane().add(buttonSetOcean2);
+		buttonSetAirBus.setBounds(790, 182, 118, 41);
+		frame.getContentPane().add(buttonSetAirBus);
 
 		JPanel panel = new JPanel();
 		panel.setBounds(779, 226, 250, 230);
@@ -98,8 +100,7 @@ public class FormPort {
 		panel.add(pictureBoxTakeOcean);
 
 		JLabel label = new JLabel("Take Boat");
-		label.setBounds(12, 0, 110, 20);
-		panel.add(label);
+		label.setBounds(12, 0, 118, 16);
 
 		maskedTextBox1 = new JTextField();
 		maskedTextBox1.setBounds(68, 29, 70, 22);
@@ -110,12 +111,13 @@ public class FormPort {
 		label_1.setBounds(12, 32, 56, 16);
 		panel.add(label_1);
 
-		JButton buttonTakeOcean = new JButton("Take");
-		buttonTakeOcean.addActionListener(new ActionListener() {
+		JButton buttonTakeAir = new JButton("Take");
+		buttonTakeAir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (!maskedTextBox1.getText().equals("")) {
-					IBoat ocean = port.Minus(Integer
-							.parseInt(maskedTextBox1.getText()));
+					IBoat ocean = hangar.getHangar(
+							listBoxLevels.getSelectedIndex()).Minus(
+							Integer.parseInt(maskedTextBox1.getText()));
 					if (ocean != null) {
 						ocean.SetPosition(35, 30, pictureBoxTakeOcean.getWidth(),
 								pictureBoxTakeOcean.getHeight());
@@ -129,7 +131,24 @@ public class FormPort {
 				}
 			}
 		});
-		buttonTakeOcean.setBounds(22, 64, 110, 20);
-		panel.add(buttonTakeOcean);
+		buttonTakeAir.setBounds(22, 64, 97, 25);
+		panel.add(buttonTakeAir);
+
+		listBoxLevels = new JList();
+		listBoxLevels.setBounds(790, 11, 118, 118);
+		frame.getContentPane().add(listBoxLevels);
+		model = new DefaultListModel();
+		for (int i = 0; i < 6; i++) {
+			model.addElement("Level " + (i + 1));
+		}
+		listBoxLevels.setModel(model);
+		listBoxLevels.setSelectedIndex(0);
+		panelPort.setListLevels(listBoxLevels);
+		listBoxLevels.addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				panelPort.repaint();
+			}
+		});
 	}
 }

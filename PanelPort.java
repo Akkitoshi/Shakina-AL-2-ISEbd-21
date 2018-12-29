@@ -1,23 +1,34 @@
 package javalabs;
+
 import java.awt.Graphics;
-import javax.swing.JPanel;
+import javax.swing.*;
 
-public class PanelPort extends JPanel{
-    public Port<IBoat> port;
+public class PanelPort extends JPanel {
+	private MultiLevelParking hangar;
+	private JList listBoxLevels;
+	public final int countLevel = 7;
 
-    public Port<IBoat> getPort() {
-        return port;
-    }
+	public MultiLevelParking getPort() {
+		return hangar;
+	}
 
-    public PanelPort() {
-        port = new Port<>(20, 615, 603);
-    }
+	public PanelPort() {
+		hangar = new MultiLevelParking(countLevel, 615, 603);
+	}
 
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g);
-        if(port != null) {
-            port.Draw(g);
-        }
-    }
+	public void setListLevels(JList listBoxLevels) {
+		this.listBoxLevels = listBoxLevels;
+	}
+
+	@Override
+	public void paint(Graphics g) {
+		super.paint(g);
+		int selectedLevel = listBoxLevels.getSelectedIndex();
+		hangar.getHangar(selectedLevel).Draw(g);
+		if (selectedLevel != -1) {
+			if (hangar != null) {
+				hangar.getHangar(selectedLevel).Draw(g);
+			}
+		}
+	}
 }

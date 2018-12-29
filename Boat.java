@@ -2,6 +2,9 @@ package javalabs;
 
 import java.awt.Color;
 import java.awt.Graphics;
+
+import javalabs.DirectionClass;
+import javalabs.Lodka;
 import javalabs.DirectionClass.Direction;
 
 public class Boat extends Lodka {
