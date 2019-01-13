@@ -1,70 +1,52 @@
-package javalabs;
-
 import java.awt.Color;
 import java.awt.Graphics;
 
-import javalabs.DirectionClass;
-import javalabs.Lodka;
-import javalabs.DirectionClass.Direction;
-
 public class Boat extends Lodka {
-	private final int BoatWidth = 140;
 
-	private final int BoatHeight = 60;
+	protected final int boatWidth = 100;
+	protected final int boatHeight = 60;
 
-	private Color DopColor;
-
-	void getDopColor(Color DopColor) {
-		this.DopColor = DopColor;
+	public Boat(int maxSpeed, float weight, Color mainColor) {
+		__MaxSpeed = maxSpeed;
+		__Weight = weight;
+		__MainColor = mainColor;
 	}
 
-	Color setDopColor() {
-		return this.DopColor;
-	}
-
-	public Boat(int maxSpeed, int weight, Color mainColor) {
-		MaxSpeed = maxSpeed;
-		Weight = weight;
-		MainColor = mainColor;
-	}
-
+	@Override
 	public void MoveTransport(Direction direction) {
-		float step = MaxSpeed;
+		float step = __MaxSpeed * 100 / __Weight;
 		switch (direction) {
-		case Left: {
+		case Right:
+			if (_startPosX + step < _pictureWidth - boatWidth) {
+				_startPosX += step;
+			}
+			break;
+		case Left:
 			if (_startPosX - step > 0) {
 				_startPosX -= step;
 			}
 			break;
-		}
-		case Right: {
-			if (_startPosX + step + BoatWidth < _pictureWidth) {
-				_startPosX += step;
-			}
-			break;
-		}
-		case Up: {
-			if (_startPosY - step > 0) {
+		case Up:
+			if (_startPosY - step > 25) {
 				_startPosY -= step;
 			}
 			break;
-		}
-		case Down: {
-			if (_startPosY + step + BoatHeight <= _pictureHeight) {
+		case Down:
+			if (_startPosY + step < _pictureHeight - boatHeight) {
 				_startPosY += step;
 			}
 			break;
 		}
-		}
 	}
 
+	@Override
 	public void DrawBoat(Graphics g) {
 		g.setColor(Color.DARK_GRAY);
-		g.fillRect(_startPosX + 25, _startPosY + 15, 75, 25);
-		g.fillOval(_startPosX + 79, _startPosY + 15, 40, 25);
-		g.fillOval(_startPosX, _startPosY + 15, 40, 25);
-		g.setColor(MainColor);
-		g.fillRect(_startPosX + 10, _startPosY + 15, 95, 5);
-		g.fillRect(_startPosX + 10, _startPosY + 35, 95, 5);
+		g.fillRect((int)_startPosX + 25,(int) _startPosY + 15, 75, 25);
+		g.fillOval((int)_startPosX + 79, (int)_startPosY + 15, 40, 25);
+		g.fillOval((int)_startPosX, (int)_startPosY + 15, 40, 25);
+		g.setColor(getMainColor());
+		g.fillRect((int)_startPosX + 10,(int) _startPosY + 15, 95, 5);
+		g.fillRect((int)_startPosX + 10, (int)_startPosY + 35, 95, 5);
 	}
 }

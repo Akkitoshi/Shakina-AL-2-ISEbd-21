@@ -1,47 +1,50 @@
-package javalabs;
+import java.awt.Color;
+import java.awt.Graphics;
 
-import javalabs.DirectionClass.Direction;
-import java.awt.*;
+public abstract class Lodka implements IBoat{
+	
+		protected float _startPosX;
+		protected float _startPosY;
+		protected int _pictureWidth;
+		protected int _pictureHeight;
+		public int __MaxSpeed;
+		
+		public int getMaxSpeed() {
+			return __MaxSpeed;
+		}
 
-public abstract class Lodka implements IBoat {
-	// Координата X
-	protected int _startPosX;
-	// Координата Y
-	protected int _startPosY;
-	// Ширина окна отрисовки
-	protected int _pictureWidth;
-	// Высота окна отрисовки
-	protected int _pictureHeight;
-	// Максимальная скорость судна
-	protected int MaxSpeed;
-	// Вес судна
-	protected float Weight;
-	// Основной цвет судна
-	protected Color MainColor;
+		public void setMaxSpeed(int value) {
+			__MaxSpeed = value;
+		}
 
-	public int getMaxSpeed() {
-		return MaxSpeed;
-	}
+		public float __Weight;
 
-	public float getWeight() {
-		return Weight;
-	}
+		public float getWeight() {
+			return __Weight;
+		}
 
-	public Color getMainColor() {
-		return MainColor;
-	}
+		public void setWeight(float value) {
+			__Weight = value;
+		}
 
-	// Определение места отрисовки судна
-	public void SetPosition(int x, int y, int width, int height) {
-		_startPosX = x;
-		_startPosY = y;
-		_pictureWidth = width;
-		_pictureHeight = height;
-	}
+		public Color __MainColor;
 
-	// Метод отрисовки судна
-	public abstract void DrawBoat(Graphics g);
+		public Color getMainColor() {
+			return __MainColor;
+		}
 
-	// Метод перемещения судна
-	public abstract void MoveTransport(Direction direction);
+		public void setMainColor(Color value) {
+			__MainColor = value;
+		}
+
+		public void SetPosition(int x, int y, int width, int height) {
+			_startPosX = x;
+			_startPosY = y;
+			_pictureWidth = width;
+			_pictureHeight = height;
+		}
+
+		public abstract void DrawBoat(Graphics g);
+
+		public abstract void MoveTransport(Direction direction);
 }
