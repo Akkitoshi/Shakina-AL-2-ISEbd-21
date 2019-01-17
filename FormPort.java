@@ -1,23 +1,26 @@
-package javalabs;
-import java.awt.*;
-
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
-import java.awt.event.ActionListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class FormPort {
-	private JFrame frame;
-	private JPanel panel;
-	private JList listBoxLevels;
-	private DefaultListModel model;
-	private JTextField maskedTextBox1;
-	MultiLevelParking hangar;
-
-	private PanelBoat pictureBoxTakeOcean;
-	private PanelPort panelPort;
+public class FormPort extends JFrame {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	JFrame frame;
+	private JPanel contentPane;
+	private JTextField textField;
+	private static IBoat boat;
+	@SuppressWarnings("rawtypes")
+	private static JList list;
+	private static MultiLevelPort port;
+	private final int countLevel = 5;
+	BoatConfig select;
+	private String[] elements = new String[6];
 
 	/**
 	 * Launch the application.
@@ -26,8 +29,9 @@ public class FormPort {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					FormPort window = new FormPort();
-					window.frame.setVisible(true);
+					FormPort frame = new FormPort();
+					frame.setVisible(true);
+
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -36,119 +40,129 @@ public class FormPort {
 	}
 
 	/**
-	 * Create the application.
+	 * Create the frame.
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public FormPort() {
-		initialize();
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 912, 600);
+		contentPane = new JPanel();
+		contentPane.setBackground(SystemColor.control);
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+
+		JPanelPort panelParking = new JPanelPort();
+		panelParking.setBounds(10, 11, 634, 541);
+		contentPane.add(panelParking);
+
+		list = new JList(elements);
+		list.setBounds(654, 11, 168, 107);
+		contentPane.add(list);
+
+		JButton btnLevelDown = new JButton("^");
+		btnLevelDown.setIcon(new ImageIcon(
+				"C:\\Users\\\u0415\u043A\u0430\u0442\u0435\u0440\u0438\u043D\u0430\\Documents\\\u0423\u0447\u0435\u0431\u0430\\2 \u043A\u0443\u0440\u0441\\\u0422\u0435\u0445\u043D\u043E\u043B\u043E\u0433\u0438\u0438 \u043F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u044F\\\u041B\u0430\u0431\u044B\\Java\\Down.png"));
+		btnLevelDown.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				port.levelDown();
+				list.setSelectedIndex(port.getCurrentLevel());
+				panelParking.repaint();
+			}
+		});
+		btnLevelDown.setBounds(832, 83, 45, 35);
+		contentPane.add(btnLevelDown);
+
+		JButton btnLevelUp = new JButton("v");
+		btnLevelUp.setIcon(new ImageIcon(
+				"C:\\Users\\\u0415\u043A\u0430\u0442\u0435\u0440\u0438\u043D\u0430\\Documents\\\u0423\u0447\u0435\u0431\u0430\\2 \u043A\u0443\u0440\u0441\\\u0422\u0435\u0445\u043D\u043E\u043B\u043E\u0433\u0438\u0438 \u043F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u044F\\\u041B\u0430\u0431\u044B\\Java\\Up.png"));
+		btnLevelUp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				port.levelUp();
+				list.setSelectedIndex(port.getCurrentLevel());
+				panelParking.repaint();
+			}
+		});
+		btnLevelUp.setBounds(832, 11, 45, 35);
+		contentPane.add(btnLevelUp);
+
+		for (int i = 0; i < 5; i++) {
+			elements[i] = "Level " + (i + 1);
+		}
+		port = new MultiLevelPort(countLevel, panelParking.getWidth(), panelParking.getHeight());
+		panelParking.setPort(port);
+		panelParking.setList(list);
+
+		JPanel panelGroupElements = new JPanel();
+		panelGroupElements.setBorder(new LineBorder(new Color(0, 0, 0)));
+		panelGroupElements.setBackground(SystemColor.control);
+		panelGroupElements.setBounds(654, 359, 206, 190);
+		contentPane.add(panelGroupElements);
+		panelGroupElements.setLayout(null);
+
+		JLabel lblNewLabel = new JLabel("\u041C\u0435\u0441\u0442\u043E");
+		lblNewLabel.setBounds(10, 14, 50, 14);
+		panelGroupElements.add(lblNewLabel);
+
+		JPanelDraw panelTakeBoat = new JPanelDraw();
+		panelTakeBoat.setBounds(20, 73, 165, 103);
+		panelGroupElements.add(panelTakeBoat);
+
+		JButton buttonTake = new JButton("\u0417\u0430\u0431\u0440\u0430\u0442\u044C");
+		buttonTake.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (list.getSelectedIndex() == -1) {
+					return;
+				}
+				int numberOfPlace = 0;
+				try {
+					numberOfPlace = Integer.parseInt(textField.getText());
+				} catch (Exception ex) {
+					textField.setText("Invalid input");
+					return;
+				}
+				if (numberOfPlace >= port.getAt(list.getSelectedIndex())._places.size() || numberOfPlace < 0) {
+					textField.setText("Invalid input");
+					return;
+				}
+				boat = port.getAt(list.getSelectedIndex()).removeTransport(numberOfPlace);
+				if (boat != null) {
+					boat.SetPosition(10, 35, panelTakeBoat.getWidth(), panelTakeBoat.getHeight());
+				}
+				panelTakeBoat.setTransport(boat);
+				panelTakeBoat.repaint();
+				panelParking.repaint();
+			}
+		});
+		buttonTake.setBounds(20, 39, 176, 23);
+		panelGroupElements.add(buttonTake);
+
+		textField = new JTextField();
+		textField.setBounds(60, 11, 136, 20);
+		panelGroupElements.add(textField);
+		textField.setColumns(10);
+
+		JButton btnAdd = new JButton("\u0414\u043E\u0431\u0430\u0432\u0438\u0442\u044C");
+		btnAdd.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				getBoat();
+			}
+		});
+		btnAdd.setBounds(654, 144, 213, 23);
+		contentPane.add(btnAdd);
 	}
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
-	private void initialize() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 1050, 503);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
-		panelPort = new PanelPort();
-		panelPort.setBounds(0, 11, 777, 443);
-		frame.getContentPane().add(panelPort);
-		hangar = panelPort.getPort();
-		JPanel pictureBoxHangar = new JPanel();
-		pictureBoxHangar.setBounds(0, 0, 778, 466);
-		frame.getContentPane().add(pictureBoxHangar);
-
-		JButton buttonSetAir = new JButton("Boat");
-		buttonSetAir.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				Color mainColor = JColorChooser.showDialog(null,
-						"Choose a color", Color.GRAY);
-				Boat ocean = new Boat(100, 1000, mainColor);
-				int place = hangar.getHangar(listBoxLevels.getSelectedIndex())
-						.Plus(ocean);
-				panelPort.repaint();
-			}
-		});
-		buttonSetAir.setBounds(790, 141, 118, 41);
-		frame.getContentPane().add(buttonSetAir);
-
-		JButton buttonSetAirBus = new JButton("Catamaran");
-		buttonSetAirBus.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-				Color mainColor = JColorChooser.showDialog(null,
-						"Choose a color", Color.GRAY);
-				Color dopColor = JColorChooser.showDialog(null,
-						"Choose a color", Color.GRAY);
-				Catamaran ocean = new Catamaran(100, 1000, mainColor,
-						dopColor);
-				int place = hangar.getHangar(listBoxLevels.getSelectedIndex())
-						.Plus(ocean);
-				panelPort.repaint();
-			}
-		});
-		buttonSetAirBus.setBounds(790, 182, 118, 41);
-		frame.getContentPane().add(buttonSetAirBus);
-
-		JPanel panel = new JPanel();
-		panel.setBounds(779, 226, 250, 230);
-		frame.getContentPane().add(panel);
-		panel.setLayout(null);
-
-		pictureBoxTakeOcean = new PanelBoat();
-		pictureBoxTakeOcean.setBounds(12, 102, 250, 180);
-		panel.add(pictureBoxTakeOcean);
-
-		JLabel label = new JLabel("Take Boat");
-		label.setBounds(12, 0, 118, 16);
-
-		maskedTextBox1 = new JTextField();
-		maskedTextBox1.setBounds(68, 29, 70, 22);
-		panel.add(maskedTextBox1);
-		maskedTextBox1.setColumns(10);
-
-		JLabel label_1 = new JLabel("Place:");
-		label_1.setBounds(12, 32, 56, 16);
-		panel.add(label_1);
-
-		JButton buttonTakeAir = new JButton("Take");
-		buttonTakeAir.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (!maskedTextBox1.getText().equals("")) {
-					IBoat ocean = hangar.getHangar(
-							listBoxLevels.getSelectedIndex()).Minus(
-							Integer.parseInt(maskedTextBox1.getText()));
-					if (ocean != null) {
-						ocean.SetPosition(35, 30, pictureBoxTakeOcean.getWidth(),
-								pictureBoxTakeOcean.getHeight());
-						pictureBoxTakeOcean.setOcean(ocean);
-						pictureBoxTakeOcean.repaint();
-						panelPort.repaint();
-					} else {
-						pictureBoxTakeOcean.setOcean(null);
-						pictureBoxTakeOcean.repaint();
-					}
+	public void getBoat() {
+		select = new BoatConfig(frame);
+		if (select.res()) {
+			IBoat boat = select.getBoat();
+			if (boat != null) {
+				int place = port.getAt(list.getSelectedIndex()).addTransport(boat);
+				if (place < 0) {
+					JOptionPane.showMessageDialog(null, "No free places");
 				}
 			}
-		});
-		buttonTakeAir.setBounds(22, 64, 97, 25);
-		panel.add(buttonTakeAir);
-
-		listBoxLevels = new JList();
-		listBoxLevels.setBounds(790, 11, 118, 118);
-		frame.getContentPane().add(listBoxLevels);
-		model = new DefaultListModel();
-		for (int i = 0; i < 6; i++) {
-			model.addElement("Level " + (i + 1));
+			contentPane.repaint();
 		}
-		listBoxLevels.setModel(model);
-		listBoxLevels.setSelectedIndex(0);
-		panelPort.setListLevels(listBoxLevels);
-		listBoxLevels.addListSelectionListener(new ListSelectionListener() {
-			@Override
-			public void valueChanged(ListSelectionEvent e) {
-				panelPort.repaint();
-			}
-		});
 	}
 }
