@@ -1,367 +1,278 @@
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.TransferHandler;
-import java.awt.Color;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseListener;
-import java.awt.event.ActionEvent;
-import java.awt.Graphics;
-import java.awt.SystemColor;
+import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.IOException;
-import javax.swing.JDialog;
+import javax.swing.*;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
 public class BoatConfig extends JDialog {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	IBoat boat;
-	JPanel panel;
-	boolean r;
+    IBoat boat = null;
+    PanelConfig boatPanel;
+    boolean succes;
 
-	Color color;
-	Color dopColor;
-	int maxSpeed;
+    public BoatConfig(JFrame parent) {
+        super(parent, true);
+        initialize();
+    }
 
-	public BoatConfig(JFrame parent) {
-		super(parent, true);
-		initialize();
-	}
+    public boolean isSuccessful() {
+        setVisible(true);
+        return succes;
+    }
 
-	public boolean res() {
-		setVisible(true);
-		return r;
-	}
+    private void initialize() {
+        this.getContentPane().setBackground(SystemColor.controlHighlight);
+        this.setBounds(100, 100, 565, 418);
+        this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        this.getContentPane().setLayout(null);
 
-	private void initialize() {
-		this.getContentPane().setBackground(SystemColor.control);
-		this.setBounds(100, 100, 390, 300);
-		this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		this.getContentPane().setLayout(null);
+        Border border = BorderFactory.createLineBorder(Color.BLACK, 3);
 
-		JLabel lblBoat = new JLabel("Boat");
-		lblBoat.setBackground(SystemColor.controlHighlight);
-		lblBoat.setBounds(10, 29, 113, 14);
-		this.getContentPane().add(lblBoat);
+        JLabel labelBoat = new JLabel("Лодка");
+        labelBoat.setHorizontalAlignment(SwingConstants.CENTER);
+        labelBoat.setBounds(10, 29, 153, 84);
+        labelBoat.setBorder(new LineBorder(new Color(0, 0, 0)));
+        getContentPane().add(labelBoat);
 
-		JLabel lblCatamaran = new JLabel("Catamaran");
-		lblCatamaran.setBackground(SystemColor.controlHighlight);
-		lblCatamaran.setBounds(10, 64, 124, 14);
-		this.getContentPane().add(lblCatamaran);
+        JLabel labelCatamaran = new JLabel("Катамаран");
+        labelCatamaran.setHorizontalAlignment(SwingConstants.CENTER);
+        labelCatamaran.setBounds(10, 135, 153, 84);
+        labelCatamaran.setBorder(new LineBorder(new Color(0, 0, 0)));
+        getContentPane().add(labelCatamaran);
 
-		panel = new JPanel();
-		panel.getLayout();
-		panel.setBounds(130, 11, 120, 112);
-		this.getContentPane().add(panel);
+        JLabel labelMainColor = new JLabel("Основной цвет");
+        labelMainColor.setHorizontalAlignment(SwingConstants.CENTER);
+        labelMainColor.setBounds(211, 223, 133, 50);
+        labelMainColor.setBorder(new LineBorder(new Color(0, 0, 0)));
+        getContentPane().add(labelMainColor);
 
-		MouseListener mouseL = new MouseListener() {
+        JLabel labelSecondColor = new JLabel("Доп. цвет");
+        labelSecondColor.setHorizontalAlignment(SwingConstants.CENTER);
+        labelSecondColor.setBounds(211, 286, 133, 50);
+        labelSecondColor.setBorder(new LineBorder(new Color(0, 0, 0)));
+        getContentPane().add(labelSecondColor);
 
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				// TODO Auto-generated method stub
+        boatPanel = new PanelConfig();
+        boatPanel.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+        FlowLayout flowLayout = (FlowLayout) boatPanel.getLayout();
+        boatPanel.setBounds(201, 29, 190, 178);
+        this.getContentPane().add(boatPanel);
 
-			}
+        MouseListener ml = new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                JComponent jc = (JComponent) e.getSource();
+                TransferHandler th = jc.getTransferHandler();
+                th.exportAsDrag(jc, e, TransferHandler.COPY);
+            }
+        };
 
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				// TODO Auto-generated method stub
+        labelBoat.addMouseListener(ml);
+        labelCatamaran.addMouseListener(ml);
+        labelCatamaran.setTransferHandler(new TransferHandler("text"));
+        labelBoat.setTransferHandler(new TransferHandler("text"));
 
-			}
+        boatPanel.setDropTarget(new DropTarget() {
 
-			@Override
-			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
+            public void drop(DropTargetDropEvent e) {
 
-			}
+                try {
+                    for (DataFlavor df : e.getTransferable().getTransferDataFlavors()) {
+                        if (e.getTransferable().getTransferData(df) == "Лодка") {
+                            boat = new Boat(10, 10, Color.WHITE);
+                            boatPanel.setBoat(boat);
+                            boat.SetPosition(25, 50, boatPanel.getWidth(), boatPanel.getHeight());
+                        } else if (e.getTransferable().getTransferData(df) == "Катамаран") {
+                            boat = new Catamaran(30, 2, Color.WHITE, Color.BLACK);
+                            boatPanel.setBoat(boat);
+                            boat.SetPosition(25, 50,boatPanel.getWidth(), boatPanel.getHeight());
+                        }
+                       boatPanel.repaint();
+                    }
+                } catch (Exception ex) {
+                }
 
-			@Override
-			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
-				JComponent jc = (JComponent) e.getSource();
-				TransferHandler th = jc.getTransferHandler();
-				th.exportAsDrag(jc, e, TransferHandler.COPY);
-			}
+            }
 
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				// TODO Auto-generated method stub
+            public void dragEnter(DropTargetDragEvent e) {
+                for (DataFlavor df : e.getTransferable().getTransferDataFlavors()) {
+                    try {
+                        if (e.getTransferable().getTransferData(df) instanceof String)
+                            e.acceptDrag(DnDConstants.ACTION_COPY);
+                        else
+                            e.acceptDrag(DnDConstants.ACTION_NONE);
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            }
+        });
 
-			}
+        JPanel panelYellow = new JPanel();
+        panelYellow.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+        panelYellow.setName("cyan");
+        panelYellow.setBackground(Color.CYAN);
+        panelYellow.setBounds(458, 92, 50, 50);
+        this.getContentPane().add(panelYellow);
 
-		};
+        JPanel panelWhite = new JPanel();
+        panelWhite.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+        panelWhite.setName("magenta");
+        panelWhite.setBackground(Color.MAGENTA);
+        panelWhite.setBounds(396, 29, 50, 50);
+        this.getContentPane().add(panelWhite);
 
-		lblBoat.addMouseListener(mouseL);
-		lblCatamaran.addMouseListener(mouseL);
-		lblCatamaran.setTransferHandler(new TransferHandler("text"));
-		lblBoat.setTransferHandler(new TransferHandler("text"));
+        JPanel panelBlue = new JPanel();
+        panelBlue.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+        panelBlue.setName("blue");
+        panelBlue.setBackground(Color.BLUE);
+        panelBlue.setBounds(458, 29, 50, 50);
+        this.getContentPane().add(panelBlue);
 
-		panel.setDropTarget(new DropTarget() {
+        JPanel panelRed = new JPanel();
+        panelRed.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+        panelRed.setName("pink");
+        panelRed.setBackground(Color.PINK);
+        panelRed.setBounds(396, 92, 50, 50);
+        this.getContentPane().add(panelRed);
 
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
+        JPanel panelGreen = new JPanel();
+        panelGreen.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+        panelGreen.setName("green");
+        panelGreen.setBackground(Color.GREEN);
+        panelGreen.setBounds(396, 223, 50, 50);
+        this.getContentPane().add(panelGreen);
 
-			public void drop(DropTargetDropEvent e) {
+        JPanel panelGrey = new JPanel();
+        panelGrey.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+        panelGrey.setName("yellow");
+        panelGrey.setBackground(Color.YELLOW);
+        panelGrey.setBounds(396, 160, 50, 50);
+        this.getContentPane().add(panelGrey);
 
-				try {
+        JPanel panelBlack = new JPanel();
+        panelBlack.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+        panelBlack.setName("black");
+        panelBlack.setBackground(Color.BLACK);
+        panelBlack.setBounds(458, 223, 50, 50);
+        this.getContentPane().add(panelBlack);
 
-					for (DataFlavor df : e.getTransferable()
-							.getTransferDataFlavors()) {
-						if (e.getTransferable().getTransferData(df) == "Boat") {
-							boat = new Boat(100 + (int) (Math.random() * 300),
-									1000 + (int) (Math.random() * 2000),
-									Color.BLUE);
-						} else if (e.getTransferable().getTransferData(df) == "Catamaran") {
-							boat = new Catamaran(100 + (int) (Math.random() * 300),
-									1000 + (int) (Math.random() * 2000),
-									Color.BLACK, Color.ORANGE);
-						}
-						draw(panel, boat);
-					}
-				} catch (Exception ex) {
-					System.out.println(ex);
-				}
+        JPanel panelOrange = new JPanel();
+        panelOrange.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+        panelOrange.setName("orange");
+        panelOrange.setBackground(Color.ORANGE);
+        panelOrange.setBounds(458, 160, 50, 50);
+        this.getContentPane().add(panelOrange);
 
-			}
+        panelWhite.addMouseListener(ml);
+        panelWhite.setTransferHandler(new TransferHandler("name"));
 
-			public void dragEnter(DropTargetDragEvent e) {
-				for (DataFlavor df : e.getTransferable()
-						.getTransferDataFlavors()) {
-					try {
-						if (e.getTransferable().getTransferData(df) instanceof String)
-							e.acceptDrag(DnDConstants.ACTION_COPY);
-						else
-							e.acceptDrag(DnDConstants.ACTION_NONE);
-					} catch (Exception e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-				}
-			}
-		});
+        panelBlue.addMouseListener(ml);
+        panelBlue.setTransferHandler(new TransferHandler("name"));
 
-		JLabel lblMainColor = new JLabel("Main Color");
-		lblMainColor.setBounds(130, 134, 90, 27);
-		this.getContentPane().add(lblMainColor);
+        panelRed.addMouseListener(ml);
+        panelRed.setTransferHandler(new TransferHandler("name"));
 
-		JLabel lblDopColor = new JLabel("Dop Color");
-		lblDopColor.setBounds(130, 169, 90, 27);
-		this.getContentPane().add(lblDopColor);
+        panelGrey.addMouseListener(ml);
+        panelGrey.setTransferHandler(new TransferHandler("name"));
 
-		lblMainColor.setDropTarget(new DropTarget() {
+        panelBlack.addMouseListener(ml);
+        panelBlack.setTransferHandler(new TransferHandler("name"));
 
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
+        panelOrange.addMouseListener(ml);
+        panelOrange.setTransferHandler(new TransferHandler("name"));
 
-			public void drop(DropTargetDropEvent e) {
-				if (boat != null) {
-					try {
-						for (DataFlavor df : e.getTransferable()
-								.getTransferDataFlavors()) {
-							boat.setMainColor((selectColor(e.getTransferable()
-									.getTransferData(df).toString())));
-							draw(panel, boat);
-						}
-					} catch (Exception ex) {
-						System.out.println(ex + "FF");
-					}
-				}
-			}
+        panelYellow.addMouseListener(ml);
+        panelYellow.setTransferHandler(new TransferHandler("name"));
 
-			public void dragEnter(DropTargetDragEvent e) {
-				for (DataFlavor df : e.getTransferable()
-						.getTransferDataFlavors()) {
-					try {
-						if (e.getTransferable().getTransferData(df) instanceof String)
-							e.acceptDrag(DnDConstants.ACTION_COPY);
-						else
-							e.acceptDrag(DnDConstants.ACTION_NONE);
-					} catch (UnsupportedFlavorException | IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-				}
-			}
-		});
-		lblDopColor.setDropTarget(new DropTarget() {
+        panelGreen.addMouseListener(ml);
+        panelGreen.setTransferHandler(new TransferHandler("name"));
 
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
+        JButton btnAdd = new JButton("Добавить");
+        btnAdd.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                succes = true;
+                dispose();
+            }
+        });
+        btnAdd.setBounds(29, 250, 106, 23);
+        this.getContentPane().add(btnAdd);
 
-			public void drop(DropTargetDropEvent e) {
-				if (boat != null) {
-					try {
+        JButton btnCancell = new JButton("Отмена");
+        btnCancell.setBounds(29, 300, 106, 23);
+        this.getContentPane().add(btnCancell);
+        btnCancell.addActionListener((ActionEvent e) -> {
+            succes = false;
+            dispose();
+        });
 
-						for (DataFlavor df : e.getTransferable()
-								.getTransferDataFlavors()) {
-							((Catamaran) boat).setDopColor((selectColor(e
-									.getTransferable().getTransferData(df)
-									.toString())));
-							draw(panel, boat);
-						}
-					} catch (Exception ex) {
-						System.out.println(ex);
-					}
-				}
-			}
+        labelMainColor.setDropTarget(new DropTarget() {
+            public void drop(DropTargetDropEvent e) {
+                if (boat != null) {
+                    try {
+                        for (DataFlavor df : e.getTransferable().getTransferDataFlavors()) {
+                        	boat.setMainColor(e.getTransferable().getTransferData(df).toString());
+                            boatPanel.setBoat(boat);
+                            boatPanel.repaint();
+                        }
+                    } catch (Exception ex) {
+                    }
+                }
+            }
 
-			public void dragEnter(DropTargetDragEvent e) {
-				for (DataFlavor df : e.getTransferable()
-						.getTransferDataFlavors()) {
-					try {
-						if (e.getTransferable().getTransferData(df) instanceof String)
-							e.acceptDrag(DnDConstants.ACTION_COPY);
-						else
-							e.acceptDrag(DnDConstants.ACTION_NONE);
-					} catch (UnsupportedFlavorException | IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-				}
-			}
-		});
+            public void dragEnter(DropTargetDragEvent e) {
+                for (DataFlavor df : e.getTransferable().getTransferDataFlavors()) {
+                    try {
+                        if (e.getTransferable().getTransferData(df) instanceof String)
+                            e.acceptDrag(DnDConstants.ACTION_COPY);
+                        else
+                            e.acceptDrag(DnDConstants.ACTION_NONE);
+                    } catch (UnsupportedFlavorException | IOException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            }
+        });
+        labelSecondColor.setDropTarget(new DropTarget() {
+            public void drop(DropTargetDropEvent e) {
+                if (boat != null) {
+                    try {
+                        for (DataFlavor df : e.getTransferable().getTransferDataFlavors()) {
+                            ((Catamaran) boat).setDopColor(e.getTransferable().getTransferData(df).toString());
+                            boatPanel.setBoat(boat);
+                            boatPanel.repaint();
+                        }
+                    } catch (Exception ex) {
+                    }
+                }
+            }
 
-		JPanel panelYellow = new JPanel();
-		panelYellow.setName("yellow");
-		panelYellow.setBackground(Color.YELLOW);
-		panelYellow.setBounds(263, 11, 46, 39);
-		this.getContentPane().add(panelYellow);
+            public void dragEnter(DropTargetDragEvent e) {
+                for (DataFlavor df : e.getTransferable().getTransferDataFlavors()) {
+                    try {
+                        if (e.getTransferable().getTransferData(df) instanceof String)
+                            e.acceptDrag(DnDConstants.ACTION_COPY);
+                        else
+                            e.acceptDrag(DnDConstants.ACTION_NONE);
+                    } catch (UnsupportedFlavorException | IOException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
 
-		JPanel panelBlue = new JPanel();
-		panelBlue.setName("blue");
-		panelBlue.setBackground(Color.BLUE);
-		panelBlue.setBounds(319, 11, 46, 39);
-		this.getContentPane().add(panelBlue);
+    public IBoat getBoat() {
+        return boat;
+    }
 
-		JPanel panelRed = new JPanel();
-		panelRed.setName("red");
-		panelRed.setBackground(Color.RED);
-		panelRed.setBounds(263, 55, 46, 39);
-		this.getContentPane().add(panelRed);
-
-		JPanel panelGreen = new JPanel();
-		panelGreen.setName("green");
-		panelGreen.setBackground(Color.GREEN);
-		panelGreen.setBounds(319, 55, 46, 39);
-		this.getContentPane().add(panelGreen);
-
-		JPanel panelBlack = new JPanel();
-		panelBlack.setName("black");
-		panelBlack.setBackground(Color.BLACK);
-		panelBlack.setBounds(263, 98, 46, 39);
-		this.getContentPane().add(panelBlack);
-
-		JPanel panelPink = new JPanel();
-		panelPink.setName("pink");
-		panelPink.setBackground(Color.PINK);
-		panelPink.setBounds(319, 98, 46, 39);
-		this.getContentPane().add(panelPink);
-
-		JPanel panelMagenta = new JPanel();
-		panelMagenta.setName("magenta");
-		panelMagenta.setBackground(Color.MAGENTA);
-		panelMagenta.setBounds(263, 143, 46, 39);
-		this.getContentPane().add(panelMagenta);
-
-		JPanel panelCyan = new JPanel();
-		panelCyan.setName("cyan");
-		panelCyan.setBackground(Color.CYAN);
-		panelCyan.setBounds(319, 143, 46, 39);
-		this.getContentPane().add(panelCyan);
-
-		panelYellow.addMouseListener(mouseL);
-		panelYellow.setTransferHandler(new TransferHandler("name"));
-
-		panelBlue.addMouseListener(mouseL);
-		panelBlue.setTransferHandler(new TransferHandler("name"));
-
-		panelRed.addMouseListener(mouseL);
-		panelRed.setTransferHandler(new TransferHandler("name"));
-
-		panelGreen.addMouseListener(mouseL);
-		panelGreen.setTransferHandler(new TransferHandler("name"));
-
-		panelBlack.addMouseListener(mouseL);
-		panelBlack.setTransferHandler(new TransferHandler("name"));
-
-		panelPink.addMouseListener(mouseL);
-		panelPink.setTransferHandler(new TransferHandler("name"));
-
-		panelMagenta.addMouseListener(mouseL);
-		panelMagenta.setTransferHandler(new TransferHandler("name"));
-
-		panelCyan.addMouseListener(mouseL);
-		panelCyan.setTransferHandler(new TransferHandler("name"));
-
-		JButton btnAdd = new JButton(
-				"\u0414\u043E\u0431\u0430\u0432\u0438\u0442\u044C");
-		btnAdd.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				r = true;
-				dispose();
-			}
-		});
-		btnAdd.setBounds(10, 193, 96, 23);
-		this.getContentPane().add(btnAdd);
-
-		JButton btnNO = new JButton("\u041E\u0442\u043C\u0435\u043D\u0430");
-		btnNO.setBounds(10, 227, 96, 23);
-		this.getContentPane().add(btnNO);
-		btnNO.addActionListener((ActionEvent e) -> {
-			r = false;
-			dispose();
-		});
-	}
-
-	public IBoat getBoat() {
-		return boat;
-	}
-
-	public void draw(JPanel panel, IBoat boat) {
-		if (boat != null) {
-			Graphics gr = panel.getGraphics();
-			gr.clearRect(0, 0, panel.getWidth(), panel.getHeight());
-			boat.SetPosition(10, 35, panel.getWidth(), panel.getHeight());
-			boat.DrawBoat(gr);
-		}
-	}
-
-	public Color selectColor(String s) {
-		switch (s) {
-		case "yellow":
-			return Color.yellow;
-		case "blue":
-			return Color.blue;
-		case "red":
-			return Color.red;
-		case "green":
-			return Color.green;
-		case "black":
-			return Color.black;
-		case "pink":
-			return Color.pink;
-		case "magenta":
-			return Color.magenta;
-		case "cyan":
-			return Color.cyan;
-		}
-
-		return null;
-	}
 }
